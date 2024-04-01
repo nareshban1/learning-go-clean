@@ -200,7 +200,7 @@ go mod tidy
 
 ### Contribute 👩‍💻🧑‍💻
 
-We area happy that you are looking to improve go clean architecture. Please check out the [contributing guide](contributing.md)
+We are happy that you are looking to improve go clean architecture. Please check out the [contributing guide](contributing.md)
 
 Even if you are not able to make contributions via code, please don't hesitate to file bugs or feature requests that needs to be implemented to solve your use case.
 
