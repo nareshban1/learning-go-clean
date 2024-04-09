@@ -79,7 +79,7 @@ func (u *Controller) UpdateUser(c *gin.Context) {
 
 	userID, err := types.ShouldParseUUID(paramID)
 	if err != nil {
-		utils.HandleValidationError(u.logger, c, api_errors.ErrInvalidUUID)
+		utils.HandleError(u.logger, c, api_errors.ErrInvalidUUID)
 		return
 	}
 
@@ -111,7 +111,7 @@ func (u *Controller) DeleteUser(c *gin.Context) {
 
 	userID, err := types.ShouldParseUUID(paramID)
 	if err != nil {
-		utils.HandleValidationError(u.logger, c, api_errors.ErrInvalidUUID)
+		utils.HandleError(u.logger, c, api_errors.ErrInvalidUUID)
 		return
 	}
 
