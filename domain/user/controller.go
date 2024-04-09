@@ -2,7 +2,6 @@ package user
 
 import (
 	"clean-architecture/domain/models"
-	"clean-architecture/pkg/api_errors"
 	"clean-architecture/pkg/framework"
 	"clean-architecture/pkg/responses"
 	"clean-architecture/pkg/types"
@@ -31,7 +30,7 @@ func (u *Controller) GetOneUser(c *gin.Context) {
 
 	userID, err := types.ShouldParseUUID(paramID)
 	if err != nil {
-		utils.HandleValidationError(u.logger, c, api_errors.ErrInvalidUUID)
+		utils.HandleValidationError(u.logger, c, ErrInvalidUserID)
 		return
 	}
 
@@ -79,7 +78,7 @@ func (u *Controller) UpdateUser(c *gin.Context) {
 
 	userID, err := types.ShouldParseUUID(paramID)
 	if err != nil {
-		utils.HandleError(u.logger, c, api_errors.ErrInvalidUUID)
+		utils.HandleError(u.logger, c, ErrInvalidUserID)
 		return
 	}
 
@@ -111,7 +110,7 @@ func (u *Controller) DeleteUser(c *gin.Context) {
 
 	userID, err := types.ShouldParseUUID(paramID)
 	if err != nil {
-		utils.HandleError(u.logger, c, api_errors.ErrInvalidUUID)
+		utils.HandleError(u.logger, c, ErrInvalidUserID)
 		return
 	}
 
