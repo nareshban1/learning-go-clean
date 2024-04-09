@@ -28,10 +28,7 @@ func HandleErrorWithStatus(logger framework.Logger, c *gin.Context, statusCode i
 }
 
 // list static errors to filter
-var exceptStaticError = []error{
-	gorm.ErrRecordNotFound,
-	api_errors.ErrInvalidUUID,
-}
+var exceptStaticError = []error{}
 
 // list dyanmic errors to filter
 var exceptDynamicError = []error{}
@@ -45,6 +42,23 @@ var sqlError *mysql.MySQLError
 
 func HandleError(logger framework.Logger, c *gin.Context, err error) {
 	logger.Error(err)
+
+	// will not captured by sentry if its an explicit APIError
+	if apiErr, ok := err.(*api_errors.APIError); ok {
+		c.JSON(apiErr.StatusCode, gin.H{
+			"error": apiErr.Message,
+		})
+		return
+	}
+
+	// will not captured by sentry if its an record not found error from gorm
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusInternalServerError, gin.H{
 		"error": err.Error(),
 	})
