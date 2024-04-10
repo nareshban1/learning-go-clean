@@ -24,33 +24,45 @@ func (m *MockLogger) Error(err error) {
 
 func TestHandleError(t *testing.T) {
 	testCases := []struct {
-		name               string
-		err                error
-		expectedStatusCode int
-		expectedBody       string
+		name                string
+		err                 error
+		expectedStatusCode  int
+		expectedBody        string
+		expectSentryCapture bool
 	}{
 		{
-			name:               "Handle API Error",
-			err:                api_errors.NewAPIError(http.StatusBadRequest, "Bad Request"),
-			expectedStatusCode: http.StatusBadRequest,
-			expectedBody:       `{"error":"Bad Request"}`,
+			name:                "Handle API Error",
+			err:                 api_errors.NewAPIError(http.StatusBadRequest, "Bad Request"),
+			expectedStatusCode:  http.StatusBadRequest,
+			expectedBody:        `{"error":"Bad Request"}`,
+			expectSentryCapture: false,
 		},
 		{
-			name:               "Handle Record Not Found Error",
-			err:                gorm.ErrRecordNotFound,
-			expectedStatusCode: http.StatusNotFound,
-			expectedBody:       `{"error":"record not found"}`,
+			name:                "Handle Record Not Found Error",
+			err:                 gorm.ErrRecordNotFound,
+			expectedStatusCode:  http.StatusNotFound,
+			expectedBody:        `{"error":"record not found"}`,
+			expectSentryCapture: false,
 		},
 		{
-			name:               "Handle Generic Error",
-			err:                errors.New("something went wrong"),
-			expectedStatusCode: http.StatusInternalServerError,
-			expectedBody:       `{"error":"An error occurred while processing your request. Please try again later."}`,
+			name:                "Handle Generic Error",
+			err:                 errors.New("something went wrong"),
+			expectedStatusCode:  http.StatusInternalServerError,
+			expectedBody:        `{"error":"An error occurred while processing your request. Please try again later."}`,
+			expectSentryCapture: true,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			mockService := &MockSentryService{}
+			originalService := utils.CurrentSentryService
+			utils.CurrentSentryService = mockService
+			defer func() {
+				utils.CurrentSentryService = originalService
+				mockService.Reset()
+			}()
+
 			w := httptest.NewRecorder()
 			c, _ := gin.CreateTestContext(w)
 			c.Request, _ = http.NewRequest("POST", "/", nil)
@@ -61,6 +73,12 @@ func TestHandleError(t *testing.T) {
 
 			assert.Equal(t, tc.expectedStatusCode, w.Code)
 			assert.JSONEq(t, tc.expectedBody, w.Body.String())
+
+			if tc.expectSentryCapture {
+				assert.True(t, mockService.WasCalled(), "Expected Sentry to capture the error")
+			} else {
+				assert.False(t, mockService.WasCalled(), "Sentry should not capture this error")
+			}
 		})
 	}
 }
