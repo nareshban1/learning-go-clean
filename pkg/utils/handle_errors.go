@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
@@ -83,5 +82,5 @@ func HandleError(logger framework.Logger, c *gin.Context, err error) {
 		}
 	}
 
-	sentry.CaptureException(err)
+	CurrentSentryService.CaptureException(err)
 }
