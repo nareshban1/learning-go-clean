@@ -45,7 +45,6 @@ func HandleError(logger framework.Logger, c *gin.Context, err error) {
 
 	msgForUnhandledError := "An error occurred while processing your request. Please try again later."
 
-	// will not captured by sentry if its an explicit APIError
 	if apiErr, ok := err.(*api_errors.APIError); ok {
 		c.JSON(apiErr.StatusCode, gin.H{
 			"error": apiErr.Message,
@@ -53,10 +52,9 @@ func HandleError(logger framework.Logger, c *gin.Context, err error) {
 		return
 	}
 
-	// will not be captured by sentry if its a gorm.ErrRecordNotFound
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": msgForUnhandledError,
+			"error": gorm.ErrRecordNotFound.Error(),
 		})
 		return
 	}
