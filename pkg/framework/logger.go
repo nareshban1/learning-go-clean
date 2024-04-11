@@ -4,11 +4,13 @@ import (
 	"context"
 	"io"
 	"os"
+	"testing"
 	"time"
 
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"go.uber.org/zap/zaptest"
 
 	gormlogger "gorm.io/gorm/logger"
 )
@@ -258,4 +260,12 @@ func (l FxLogger) Printf(str string, args ...any) {
 func (l GinLogger) Write(p []byte) (n int, err error) {
 	l.Info(string(p))
 	return len(p), nil
+}
+
+func CreateTestLogger(t *testing.T) Logger {
+	zapLogger := zaptest.NewLogger(t)
+
+	sugaredLogger := zapLogger.Sugar()
+
+	return Logger{SugaredLogger: sugaredLogger}
 }
