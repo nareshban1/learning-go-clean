@@ -69,8 +69,12 @@ jobs:
           go build  main.go
           curl -sSf https://atlasgo.sh | sh
 
-      - name: Start the service
+      - name: Run migration
         run: |
+          make migrate-apply
+
+      - name: Start the service
+        run:
           ./main app:serve &
       - name: Validate if the service is working or not via health check api
         run: |
