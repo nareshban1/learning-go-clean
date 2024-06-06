@@ -71,8 +71,7 @@ jobs:
 
       - name: Start the service
         run: |
-          ./main app:serve
-
+          ./main app:serve &
       - name: Validate if the service is working or not via health check api
         run: |
           sleep 5
