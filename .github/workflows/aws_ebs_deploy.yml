@@ -70,6 +70,7 @@ jobs:
       - name: Start the service
         run: |
           ./main app:serve &
+          make migrate-apply
 
       - name: Validate if the service is working or not via health check api
         run: |
