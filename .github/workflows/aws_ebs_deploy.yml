@@ -65,11 +65,13 @@ jobs:
           LOG_LEVEL=info' > .env
 
       - name: Build the repository
-        run: go build  main.go
+        run: |
+          go build  main.go
+          curl -sSf https://atlasgo.sh | sh
 
       - name: Start the service
         run: |
-          ./main app:serve &
+          ./main app:serve
           make migrate-apply
 
       - name: Validate if the service is working or not via health check api
