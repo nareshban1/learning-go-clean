@@ -4,16 +4,16 @@ export
 MIGRATE=atlas migrate
 
 migrate-status:
-	$(MIGRATE) status --url "mysql://$(DB_USER):$(DB_PASS)@:$(DB_PORT)/$(DB_NAME)" --env gorm
+	$(MIGRATE) status --url "mysql://$(DB_USER):$(DB_PASS)@:$(DB_PORT)/$(DB_NAME)"
 
 migrate-diff:
 	$(MIGRATE) diff --env gorm
 
 migrate-apply:
-	$(MIGRATE) apply --url "mysql://$(DB_USER):$(DB_PASS)@:$(DB_PORT)/$(DB_NAME)" --env gorm
+	$(MIGRATE) apply --url "mysql://$(DB_USER):$(DB_PASS)@:$(DB_PORT)/$(DB_NAME)"
 
 migrate-down:
-	$(MIGRATE) down --url "mysql://$(DB_USER):$(DB_PASS)@:$(DB_PORT)/$(DB_NAME)" --env gorm
+	$(MIGRATE) down --url "mysql://$(DB_USER):$(DB_PASS)@:$(DB_PORT)/$(DB_NAME)"
 
 migrate-hash:
 	$(MIGRATE) hash
