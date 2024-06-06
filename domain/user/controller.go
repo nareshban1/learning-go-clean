@@ -4,7 +4,6 @@ import (
 	"clean-architecture/domain/models"
 	"clean-architecture/pkg/api_errors"
 	"clean-architecture/pkg/framework"
-	"clean-architecture/pkg/services"
 	"clean-architecture/pkg/types"
 	"clean-architecture/pkg/utils"
 
@@ -13,11 +12,9 @@ import (
 
 // UserController data type
 type Controller struct {
-	service         *Service
-	logger          framework.Logger
-	s3BucketService services.S3Service
-	sesService      services.SESService
-	env             *framework.Env
+	service *Service
+	logger  framework.Logger
+	env     *framework.Env
 }
 
 type URLObject struct {
@@ -29,16 +26,12 @@ type URLObject struct {
 func NewController(
 	userService *Service,
 	logger framework.Logger,
-	s3BucketService services.S3Service,
-	sesService services.SESService,
 	env *framework.Env,
 ) *Controller {
 	return &Controller{
-		service:         userService,
-		logger:          logger,
-		s3BucketService: s3BucketService,
-		sesService:      sesService,
-		env:             env,
+		service: userService,
+		logger:  logger,
+		env:     env,
 	}
 }
 

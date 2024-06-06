@@ -1,31 +1,22 @@
 include .env
 export
 
-MIGRATE=docker-compose exec web sql-migrate
-
-ifeq ($(p),host)
- 	MIGRATE=sql-migrate
-endif
+MIGRATE=atlas migrate
 
 migrate-status:
-	$(MIGRATE) status
+	$(MIGRATE) status --url "mysql://$(DB_USER):$(DB_PASS)@:33068/$(DB_NAME)" --env gorm
 
-migrate-up:
-	$(MIGRATE) up
+migrate-diff:
+	$(MIGRATE) diff --env gorm
+
+migrate-apply:
+	$(MIGRATE) apply --url "mysql://$(DB_USER):$(DB_PASS)@:33068/$(DB_NAME)" --env gorm
 
 migrate-down:
-	$(MIGRATE) down
+	$(MIGRATE) down --url "mysql://$(DB_USER):$(DB_PASS)@:33068/$(DB_NAME)" --env gorm
 
-redo:
-	@read -p  "Are you sure to reapply the last migration? [y/n]" -n 1 -r; \
-	if [[ $$REPLY =~ ^[Yy] ]]; \
-	then \
-		$(MIGRATE) redo; \
-	fi
-
-create:
-	@read -p  "What is the name of migration?" NAME; \
-	${MIGRATE} new $$NAME
+migrate-hash:
+	$(MIGRATE) hash
 
 lint-setup:
 	python3 -m ensurepip --upgrade
@@ -33,4 +24,4 @@ lint-setup:
 	pre-commit install
 	pre-commit autoupdate
 
-.PHONY: migrate-status migrate-up migrate-down redo create lint-setup
+.PHONY: migrate-status migrate-diff migrate-apply migrate-down migrate-hash lint-setup

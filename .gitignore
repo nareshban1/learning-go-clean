@@ -1,6 +1,7 @@
 .env
 log/access.log
 .git
+.worktrees
 log
 .idea/
 .DS_Store

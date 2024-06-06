@@ -4,7 +4,6 @@ import (
 	"clean-architecture/pkg/framework"
 	"clean-architecture/pkg/infrastructure"
 	"clean-architecture/pkg/middlewares"
-	"clean-architecture/seeds"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -27,7 +26,7 @@ func (s *ServeCommand) Run() framework.CommandRunner {
 		router infrastructure.Router,
 		logger framework.Logger,
 		database infrastructure.Database,
-		seeds seeds.Seeds,
+		//seeds seeds.Seeds,
 
 	) {
 		logger.Info(`+-----------------------+`)
@@ -39,7 +38,7 @@ func (s *ServeCommand) Run() framework.CommandRunner {
 		time.Local = loc
 
 		middleware.Setup()
-		seeds.Setup()
+		//seeds.Setup()
 
 		if env.Environment != "local" && env.SentryDSN != "" {
 			err := sentry.Init(sentry.ClientOptions{
