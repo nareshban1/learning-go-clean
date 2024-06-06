@@ -4,7 +4,11 @@ linters-settings:
   goconst:
     min-len: 2
     min-occurrences: 3
-
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
   govet:
     check-shadowing: true
   nolintlint:
@@ -26,6 +30,7 @@ linters:
     - errcheck
     - exportloopref
     - goconst
+    - gocritic
     - gofmt
     - goimports
     - gocyclo

@@ -14,7 +14,7 @@ migrate-up:
 	$(MIGRATE) up
 
 migrate-down:
-	$(MIGRATE) down 
+	$(MIGRATE) down
 
 redo:
 	@read -p  "Are you sure to reapply the last migration? [y/n]" -n 1 -r; \

@@ -1,7 +1,6 @@
 package console
 
 import (
-	"clean-architecture/console/commands"
 	"clean-architecture/pkg/framework"
 	"context"
 
@@ -10,8 +9,7 @@ import (
 )
 
 var cmds = map[string]framework.Command{
-	"cmd:random": commands.NewRandomCommand(),
-	"app:serve":  NewServeCommand(),
+	"app:serve": NewServeCommand(),
 }
 
 // GetSubCommands gives a list of sub commands

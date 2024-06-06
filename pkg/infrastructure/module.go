@@ -7,12 +7,6 @@ var Module = fx.Options(
 	fx.Provide(
 		NewRouter,
 		NewDatabase,
-		NewFBApp,
-		NewFBAuth,
-		NewFirestoreClient,
-		NewBucketStorage,
-		NewFCMClient,
-		NewMigrations,
 		NewS3Client,
 		NewAWSConfig,
 		NewPresignClient,

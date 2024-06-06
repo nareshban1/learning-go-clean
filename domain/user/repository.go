@@ -4,8 +4,6 @@ import (
 	"clean-architecture/domain/models"
 	"clean-architecture/pkg/framework"
 	"clean-architecture/pkg/infrastructure"
-
-	"gorm.io/gorm"
 )
 
 // UserRepository database structure
@@ -19,26 +17,12 @@ func NewRepository(db infrastructure.Database, logger framework.Logger) Reposito
 	return Repository{db, logger}
 }
 
-// For AutoMigrating (used in fx.Invoke)
-func Migrate(r Repository) error {
-	r.logger.Info("[Migrating...User]")
-	if err := r.DB.AutoMigrate(&models.User{}); err != nil {
-		r.logger.Error("[Migration failed...User]")
-		return err
-	}
-	return nil
-}
+// ExistsByEmail checks if the user exists by email
+func (r *Repository) ExistsByEmail(email string) (bool, error) {
+	r.logger.Info("[UserRepository...Exists]")
 
-func (r *Repository) Create(user *models.User) error {
-	r.logger.Info("[UserRepository...Create]")
-	return r.DB.Create(&user).Error
-}
+	users := make([]models.User, 0, 1)
+	query := r.DB.Where("email = ?", email).Limit(1).Find(&users)
 
-// WithTrx delegate transaction from user repository
-func (r Repository) WithTrx(trxHandle *gorm.DB) Repository {
-	if trxHandle != nil {
-		r.logger.Debug("using WithTrx as trxHandle is not nil")
-		r.Database.DB = trxHandle
-	}
-	return r
+	return query.RowsAffected > 0, query.Error
 }

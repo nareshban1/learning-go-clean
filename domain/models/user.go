@@ -3,7 +3,8 @@ package models
 import (
 	"clean-architecture/domain/constants"
 	"clean-architecture/pkg/types"
-	"clean-architecture/pkg/utils"
+
+	_ "ariga.io/atlas-provider-gorm/gormschema"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -12,18 +13,19 @@ import (
 // User model
 type User struct {
 	gorm.Model
-	UUID            types.BinaryUUID   `json:"uuid" gorm:"index;notnull"`
-	CognitoUID      *string            `json:"-" gorm:"index;size:50"`
-	FirstName       string             `json:"first_name" gorm:"size:255"`
-	LastName        string             `json:"last_name" gorm:"size:255"`
-	FirstNameJa     string             `json:"first_name_ja" gorm:"size:255"`
-	LastNameJa      string             `json:"last_name_ja" gorm:"size:255"`
-	Email           string             `json:"email" gorm:"notnull;index,unique;size:255"`
-	Role            constants.UserRole `json:"role" gorm:"size:25" copier:"-"`
-	IsActive        bool               `json:"is_active" gorm:"default:false"`
-	IsEmailVerified bool               `json:"is_email_verified" gorm:"default:false"`
-	IsAdmin         bool               `json:"-" gorm:"default:false"`
-	ProfilePic      utils.SignedURL    `json:"profile_pic"`
+	UUID       types.BinaryUUID `json:"uuid" gorm:"index;notnull;unique"`
+	CognitoUID *string          `json:"-" gorm:"index;size:50;unique"`
+
+	FirstName   string `json:"first_name" gorm:"size:255"`
+	LastName    string `json:"last_name" gorm:"size:255"`
+	FirstNameJa string `json:"first_name_ja" gorm:"size:255"`
+	LastNameJa  string `json:"last_name_ja" gorm:"size:255"`
+
+	Email string             `json:"email" gorm:"notnull;index,unique;size:255"`
+	Role  constants.UserRole `json:"role" gorm:"size:25" copier:"-"`
+
+	IsActive        bool `json:"is_active" gorm:"default:false"`
+	IsEmailVerified bool `json:"is_email_verified" gorm:"default:false"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {

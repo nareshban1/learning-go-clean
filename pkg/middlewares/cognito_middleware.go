@@ -5,6 +5,7 @@ import (
 	"clean-architecture/pkg/framework"
 	"clean-architecture/pkg/responses"
 	"clean-architecture/pkg/services"
+	"fmt"
 	"net/http"
 
 	"strings"
@@ -48,10 +49,18 @@ func (am CognitoAuthMiddleware) addClaimsToContext(ctx *gin.Context) error {
 	if err != nil {
 		return api_errors.ErrUnauthorizedAccess
 	}
+
 	claims := token.PrivateClaims()
+	username := claims["cognito:username"]
+	authCogUser, err := am.service.GetUserByUsername(fmt.Sprint(username))
+	if err != nil {
+		return err
+	}
+	if !authCogUser.Enabled {
+		return api_errors.ErrUnauthorizedAccess
+	}
 
 	ctx.Set(framework.Claims, claims)
-	username := claims["cognito:username"]
 	ctx.Set(framework.UID, username)
 
 	role, ok := claims["custom:role"]
@@ -59,5 +68,6 @@ func (am CognitoAuthMiddleware) addClaimsToContext(ctx *gin.Context) error {
 		ctx.Set(framework.Role, role)
 	}
 	ctx.Set(framework.CognitoPass, true)
+
 	return nil
 }
