@@ -2,7 +2,6 @@ package user
 
 import (
 	"clean-architecture/domain/models"
-	"clean-architecture/pkg/api_errors"
 	"clean-architecture/pkg/framework"
 	"clean-architecture/pkg/types"
 	"clean-architecture/pkg/utils"
@@ -60,7 +59,7 @@ func (u *Controller) GetUserByID(c *gin.Context) {
 
 	userID, err := types.ShouldParseUUID(paramID)
 	if err != nil {
-		utils.HandleValidationError(u.logger, c, api_errors.ErrInvalidUUID)
+		utils.HandleValidationError(u.logger, c, ErrInvalidUserID)
 		return
 	}
 

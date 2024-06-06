@@ -197,3 +197,17 @@ go get example.com/theirmodule@latest
 go mod tidy
 ```
 </details>
+
+### Contribute 👩‍💻🧑‍💻
+
+We are happy that you are looking to improve go clean architecture. Please check out the [contributing guide](contributing.md)
+
+Even if you are not able to make contributions via code, please don't hesitate to file bugs or feature requests that needs to be implemented to solve your use case.
+
+### Authors
+
+<div align="center">
+    <a href="https://github.com/wesionaryTEAM/go_clean_architecture/graphs/contributors">
+        <img src="https://contrib.rocks/image?repo=wesionaryTEAM/go_clean_architecture" />
+    </a>
+</div>

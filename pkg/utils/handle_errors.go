@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
@@ -28,10 +27,7 @@ func HandleErrorWithStatus(logger framework.Logger, c *gin.Context, statusCode i
 }
 
 // list static errors to filter
-var exceptStaticError = []error{
-	gorm.ErrRecordNotFound,
-	api_errors.ErrInvalidUUID,
-}
+var exceptStaticError = []error{}
 
 // list dyanmic errors to filter
 var exceptDynamicError = []error{}
@@ -45,8 +41,25 @@ var sqlError *mysql.MySQLError
 
 func HandleError(logger framework.Logger, c *gin.Context, err error) {
 	logger.Error(err)
+
+	msgForUnhandledError := "An error occurred while processing your request. Please try again later."
+
+	if apiErr, ok := err.(*api_errors.APIError); ok {
+		c.JSON(apiErr.StatusCode, gin.H{
+			"error": apiErr.Message,
+		})
+		return
+	}
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": gorm.ErrRecordNotFound.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusInternalServerError, gin.H{
-		"error": err.Error(),
+		"error": msgForUnhandledError,
 	})
 
 	for _, e := range exceptStaticError {
@@ -69,5 +82,5 @@ func HandleError(logger framework.Logger, c *gin.Context, err error) {
 		}
 	}
 
-	sentry.CaptureException(err)
+	CurrentSentryService.CaptureException(err)
 }
