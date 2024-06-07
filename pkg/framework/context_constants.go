@@ -1,9 +1,6 @@
 package framework
 
 const (
-	// DBTransaction is database transaction handle set at router context
-	DBTransaction = "db_trx"
-
 	// Claims -> authentication claims
 	Claims = "Claims"
 

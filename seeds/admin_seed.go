@@ -50,8 +50,7 @@ func (s AdminSeed) Setup() {
 		adminUser := models.User{
 			Email:           email,
 			CognitoUID:      aws.String(cognitoUUID),
-			Role:            constants.RoleIsAdmin,
-			IsAdmin:         true,
+			Role:            constants.UserRoleAdmin,
 			IsEmailVerified: true,
 			IsActive:        true,
 		}

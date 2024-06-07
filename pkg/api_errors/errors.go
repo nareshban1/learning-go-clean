@@ -1,16 +1,7 @@
 package api_errors //nolint:revive // underscore in package name is okay
 
 import (
-	"errors"
 	"fmt"
-)
-
-var (
-	ErrUnauthorizedAccess     = errors.New("unauthorized access")
-	ErrInvalidUUID            = errors.New("invalid uuid")
-	ErrExtensionMismatch      = errors.New("file extension not supported")
-	ErrThumbExtensionMismatch = errors.New("file extension not supported for thumbnail")
-	ErrFileRead               = errors.New("file read error")
 )
 
 // for dynamic error

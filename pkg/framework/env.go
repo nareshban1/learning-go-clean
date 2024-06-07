@@ -29,6 +29,7 @@ type Env struct {
 	ClientID           string `mapstructure:"COGNITO_CLIENT_ID"`
 	UserPoolID         string `mapstructure:"COGNITO_USER_POOL_ID"`
 	AWSSecretAccessKey string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
+	DBFORWARDPORT      string `mapstructure:"DB_FORWARD_PORT"`
 }
 
 var globalEnv = Env{

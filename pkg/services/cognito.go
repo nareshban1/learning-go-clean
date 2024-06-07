@@ -50,7 +50,6 @@ func (cg *CognitoAuthService) VerifyToken(tokenString string) (jwt.Token, error)
 		jwt.WithValidate(true),
 		jwt.WithIssuer(issuer),
 	)
-
 	if err != nil {
 		return nil, err
 	}
@@ -82,25 +81,50 @@ func (cg *CognitoAuthService) CreateUser(email, password, role string) (string, 
 		}
 		return "", err
 	}
-
 	_, err = cg.client.AdminSetUserPassword(context.Background(), &cognitoidentityprovider.AdminSetUserPasswordInput{
+
 		Username:   &email,
 		Password:   &password,
 		Permanent:  true,
 		UserPoolId: &cg.env.UserPoolID,
 	})
 	if err != nil {
-		_, delErr := cg.client.AdminDeleteUser(context.Background(), &cognitoidentityprovider.AdminDeleteUserInput{
-			Username:   &email,
-			UserPoolId: &cg.env.UserPoolID,
-		})
+		_, delErr := cg.client.AdminDeleteUser(context.Background(), &cognitoidentityprovider.AdminDeleteUserInput{Username: &email, UserPoolId: &cg.env.UserPoolID})
 		awsErr := utils.MapAWSError(cg.logger, delErr)
 		if awsErr != nil {
 			return "", awsErr
 		}
 		return "", utils.MapAWSError(cg.logger, err)
 	}
-	return "nil", nil
+
+	err = cg.setCustomClaimToOneUser(email, map[string]string{
+		"role":            role,
+		"change-password": strconv.FormatBool(false),
+	})
+	if err != nil {
+		if awsErr := utils.MapAWSError(cg.logger, err); awsErr != nil {
+			return "", awsErr
+		}
+		return "", err
+	}
+
+	// fetching created user
+	user, err := cg.GetUserByEmail(email)
+	if err != nil {
+		cg.logger.Error(err)
+		return "", err
+	}
+
+	var cognitoUUID string
+	// Access the user attributes tp find sub i.e cognito internal uuid
+	for _, attr := range user.UserAttributes {
+		if *attr.Name == "sub" {
+			cognitoUUID = *attr.Value
+			break
+		}
+	}
+
+	return cognitoUUID, nil
 }
 
 func (cg *CognitoAuthService) setCustomClaimToOneUser(user string, c map[string]string) error {
@@ -112,6 +136,7 @@ func (cg *CognitoAuthService) setCustomClaimToOneUser(user string, c map[string]
 	required := false
 
 	for key, val := range c {
+
 		attribute := types.AttributeType{
 			Name:  aws.String("custom:" + key),
 			Value: aws.String(val),
@@ -124,7 +149,6 @@ func (cg *CognitoAuthService) setCustomClaimToOneUser(user string, c map[string]
 			Name:                   aws.String(key),
 			Required:               &required,
 		}
-
 		claim = append(claim, attribute)
 		create = append(create, schemaAttribute)
 	}
@@ -139,7 +163,6 @@ func (cg *CognitoAuthService) setCustomClaimToOneUser(user string, c map[string]
 		UserPoolId:     &cg.env.UserPoolID,
 		Username:       &user,
 	})
-
 	if err != nil {
 		if awsErr := utils.MapAWSError(cg.logger, err); awsErr != nil {
 			return awsErr
@@ -155,13 +178,13 @@ func (cg *CognitoAuthService) GetUserByUsername(username string) (*cognitoidenti
 		Username:   &username,
 		UserPoolId: &cg.env.UserPoolID,
 	})
-
 	if err != nil {
 		if awsErr := utils.MapAWSError(cg.logger, err); awsErr != nil {
 			return nil, awsErr
 		}
 		return nil, err
 	}
+
 	return user, nil
 }
 
@@ -176,6 +199,7 @@ func (cg *CognitoAuthService) GetUserByEmail(email string) (*cognitoidentityprov
 		}
 		return nil, err
 	}
+
 	return user, nil
 }
 
@@ -220,7 +244,7 @@ func (cg *CognitoAuthService) CreateAdminUser(email, password string, isPermanen
 	}
 
 	err = cg.setCustomClaimToOneUser(email, map[string]string{
-		"role":            string(constants.RoleIsAdmin),
+		"role":            string(constants.UserRoleAdmin),
 		"change-password": strconv.FormatBool(!isPermanent),
 	})
 	if err != nil {
@@ -229,6 +253,7 @@ func (cg *CognitoAuthService) CreateAdminUser(email, password string, isPermanen
 		}
 		return "", err
 	}
+
 	// fetching created admin user
 	adminUser, err := cg.GetUserByEmail(email)
 	if err != nil {
@@ -380,21 +405,4 @@ func (cg *CognitoAuthService) EnableUser(username string) error {
 		return err
 	}
 	return nil
-}
-
-func (cg *CognitoAuthService) AdminLogin(email string) (*cognitoidentityprovider.AdminInitiateAuthOutput, error) {
-	out, err := cg.client.AdminInitiateAuth(context.Background(), &cognitoidentityprovider.AdminInitiateAuthInput{
-		ClientId:   &cg.env.ClientID,
-		UserPoolId: &cg.env.UserPoolID,
-		AuthFlow:   types.AuthFlowTypeCustomAuth,
-		AuthParameters: map[string]string{
-			"USERNAME": email,
-			"PASSWORD": "",
-		},
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return out, nil
 }
