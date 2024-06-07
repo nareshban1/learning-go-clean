@@ -34,7 +34,7 @@ services:
         "--default-authentication-plugin=mysql_native_password",
       ]
     ports:
-      - "${DB_PORT}:${DB_PORT}"
+      - "${DB_FORWARD_PORT}:${DB_PORT}"
     volumes:
       - clean_db:/var/lib/mysql
     healthcheck:
