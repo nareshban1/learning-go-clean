@@ -4,12 +4,12 @@ import "go.uber.org/fx"
 
 // Module Middleware exported
 var Module = fx.Options(
-	fx.Provide(NewDBTransactionMiddleware),
-	fx.Provide(NewFirebaseAuthMiddleware),
-	fx.Provide(NewPaginationMiddleware),
-	fx.Provide(NewUploadMiddleware),
-	fx.Provide(NewRateLimitMiddleware),
-	fx.Provide(NewMiddlewares),
+	fx.Provide(
+		NewUploadMiddleware,
+		NewRateLimitMiddleware,
+		NewMiddlewares,
+		NewCognitoAuthMiddleware,
+	),
 )
 
 // IMiddleware middleware interface

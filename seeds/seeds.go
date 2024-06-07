@@ -4,8 +4,8 @@ import "go.uber.org/fx"
 
 // Module exports seed module
 var Module = fx.Options(
-	fx.Provide(NewAdminSeed),
-	fx.Provide(NewSeeds),
+// fx.Provide(NewAdminSeed),
+// fx.Provide(NewSeeds),
 )
 
 // Seed db seed

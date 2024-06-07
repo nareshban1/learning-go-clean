@@ -1,9 +1,6 @@
 package framework
 
 const (
-	// DBTransaction is database transaction handle set at router context
-	DBTransaction = "db_trx"
-
 	// Claims -> authentication claims
 	Claims = "Claims"
 
@@ -24,4 +21,8 @@ const (
 
 	// Token -> bearer token
 	Token = "Token"
+
+	CognitoPass = "CognitoPass"
+
+	Role = "Role"
 )

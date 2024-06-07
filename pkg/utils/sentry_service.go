@@ -1,6 +1,6 @@
 package utils
 
-import "github.com/getsentry/sentry-go"
+import sentry "github.com/getsentry/sentry-go"
 
 type SentryService interface {
 	CaptureException(err error)

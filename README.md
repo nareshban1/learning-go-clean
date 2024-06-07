@@ -48,25 +48,25 @@ Copy the key to `serviceAccountKey.json` file. You can see the example at `servi
 ## Folder Structure :file_folder:
 
 | Folder Path                      | Description                                                                                            |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------|
+| -------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `/bootstrap`                     | contains modules required to start the application                                                     |
 | `/console`                       | server commands, run `go run main.go -help` for all the available server commands                      |
 | `/docker`                        | `docker` files required for `docker compose`                                                           |
 | `/domain`                        | contains models, constants and folder for each domain with controller, repository, routes and services |
-|   `/domain/constants`            | global application constants                                                                           |
-|   `/domain/models`               | ORM models                                                                                             |
-|   `/domain/<name>`               | controller, repository, routes and service for a `domain`. In this template `user` is a domain         |
+| `/domain/constants`              | global application constants                                                                           |
+| `/domain/models`                 | ORM models                                                                                             |
+| `/domain/<name>`                 | controller, repository, routes and service for a `domain`. In this template `user` is a domain         |
 | `/hooks`                         | `git` hooks                                                                                            |
 | `/migration`                     | database migration files                                                                               |
 | `/pkg`                           | contains setup for api_errors, infrastructure, middlewares, external services, utils                   |
-|   `/pkg/api-errors`              | server error handlers                                                                                  |
-|   `/pkg/framework`               | contains env parser, logger...                                                                         |
-|   `/pkg/infrastructure`          | third-party services connections like `gmail`, `firebase`, `s3-bucket`, ...                            |
-|   `/pkg/middlewares`             | all middlewares used in the app                                                                        |
-|   `/pkg/responses`               | different types of http responses are defined here                                                     |
-|   `/pkg/services`                | service layers, contains the functionality that compounds the core of the application                  |
-|   `/pkg/types`                   | data types used throught the application                                                               |
-|   `/pkg/utils`                   | global utility/helper functions                                                                        |
+| `/pkg/api-errors`                | server error handlers                                                                                  |
+| `/pkg/framework`                 | contains env parser, logger...                                                                         |
+| `/pkg/infrastructure`            | third-party services connections like `gmail`, `firebase`, `s3-bucket`, ...                            |
+| `/pkg/middlewares`               | all middlewares used in the app                                                                        |
+| `/pkg/responses`                 | different types of http responses are defined here                                                     |
+| `/pkg/services`                  | service layers, contains the functionality that compounds the core of the application                  |
+| `/pkg/types`                     | data types used throught the application                                                               |
+| `/pkg/utils`                     | global utility/helper functions                                                                        |
 | `/seeds`                         | seeds for already migrated tables                                                                      |
 | `/tests`                         | includes application tests                                                                             |
 | `.env.example`                   | sample environment variables                                                                           |
