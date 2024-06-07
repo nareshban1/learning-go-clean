@@ -13,7 +13,7 @@ migrate-apply:
 	$(MIGRATE) apply --url "mysql://$(DB_USER):$(DB_PASS)@:$(DB_PORT)/$(DB_NAME)"
 
 migrate-down:
-	$(MIGRATE) down --url "mysql://$(DB_USER):$(DB_PASS)@:$(DB_PORT)/$(DB_NAME)"
+	$(MIGRATE) down --url "mysql://$(DB_USER):$(DB_PASS)@:$(DB_PORT)/$(DB_NAME)" --env gorm
 
 migrate-hash:
 	$(MIGRATE) hash
