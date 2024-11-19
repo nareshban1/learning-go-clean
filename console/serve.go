@@ -43,6 +43,7 @@ func (s *ServeCommand) Run() framework.CommandRunner {
 		if env.Environment != "local" && env.SentryDSN != "" {
 			err := sentry.Init(sentry.ClientOptions{
 				Dsn:              env.SentryDSN,
+				Environment:      env.Environment,
 				AttachStacktrace: true,
 			})
 			if err != nil {
