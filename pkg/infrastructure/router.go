@@ -4,7 +4,6 @@ import (
 	"clean-architecture/pkg/framework"
 	"net/http"
 
-	"github.com/getsentry/sentry-go"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -20,15 +19,6 @@ func NewRouter(
 	env *framework.Env,
 	logger framework.Logger,
 ) Router {
-
-	if env.Environment != "local" && env.SentryDSN != "" {
-		if err := sentry.Init(sentry.ClientOptions{
-			Dsn:         env.SentryDSN,
-			Environment: `clean-backend-` + env.Environment,
-		}); err != nil {
-			logger.Infof("Sentry initialization failed: %v\n", err)
-		}
-	}
 
 	gin.DefaultWriter = logger.GetGinLogger()
 	appEnv := env.Environment
