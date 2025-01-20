@@ -27,14 +27,13 @@ func HandleErrorWithStatus(logger framework.Logger, c *gin.Context, statusCode i
 
 func HandleError(logger framework.Logger, c *gin.Context, err error) {
 	msgForUnhandledError := "An error occurred while processing your request. Please try again later."
-	logger.Infoln("error: ", err)
+
 	var apiErr *errorz.APIError
 	msg := err.Error()
 	if ok := errors.As(err, &apiErr); ok {
 		if msg == "" {
 			msg = apiErr.Message
 		}
-		logger.Error("the error is: ", err)
 		c.JSON(apiErr.StatusCode, gin.H{
 			"error": msg,
 		})

@@ -6,7 +6,6 @@ import (
 	"clean-architecture/pkg/responses"
 	"clean-architecture/pkg/utils"
 	"errors"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -85,7 +84,6 @@ func TestHandleError(t *testing.T) {
 
 			testLogger := framework.CreateTestLogger(t)
 
-			log.Println("the tc error: ", tc.err)
 			responses.HandleError(testLogger, c, tc.err)
 			assert.Equal(t, tc.expectedStatusCode, w.Code)
 			assert.JSONEq(t, tc.expectedBody, w.Body.String())
