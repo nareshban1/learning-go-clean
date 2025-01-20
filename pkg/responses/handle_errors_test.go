@@ -1,8 +1,9 @@
-package utils_test
+package responses_test
 
 import (
-	"clean-architecture/pkg/api_errors"
+	"clean-architecture/pkg/errorz"
 	"clean-architecture/pkg/framework"
+	"clean-architecture/pkg/responses"
 	"clean-architecture/pkg/utils"
 	"errors"
 	"net/http"
@@ -32,7 +33,7 @@ func TestHandleError(t *testing.T) {
 	}{
 		{
 			name:                "Handle API Error",
-			err:                 api_errors.NewAPIError(http.StatusBadRequest, "Bad Request"),
+			err:                 errorz.ErrBadRequest,
 			expectedStatusCode:  http.StatusBadRequest,
 			expectedBody:        `{"error":"Bad Request"}`,
 			expectSentryCapture: false,
@@ -69,8 +70,7 @@ func TestHandleError(t *testing.T) {
 
 			testLogger := framework.CreateTestLogger(t)
 
-			utils.HandleError(testLogger, c, tc.err)
-
+			responses.HandleError(testLogger, c, tc.err)
 			assert.Equal(t, tc.expectedStatusCode, w.Code)
 			assert.JSONEq(t, tc.expectedBody, w.Body.String())
 
