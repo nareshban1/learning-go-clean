@@ -6,6 +6,7 @@ import (
 	"clean-architecture/pkg/responses"
 	"clean-architecture/pkg/utils"
 	"errors"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -33,7 +34,7 @@ func TestHandleError(t *testing.T) {
 	}{
 		{
 			name:                "Handle API Error",
-			err:                 errorz.ErrBadRequest.JoinError("Bad Request"),
+			err:                 errorz.ErrBadRequest,
 			expectedStatusCode:  http.StatusBadRequest,
 			expectedBody:        `{"error":"Bad Request"}`,
 			expectSentryCapture: false,
@@ -43,6 +44,13 @@ func TestHandleError(t *testing.T) {
 			err:                 errorz.ErrBadRequest.JoinError("Bad Request"),
 			expectedStatusCode:  http.StatusBadRequest,
 			expectedBody:        `{"error":"Bad Request"}`,
+			expectSentryCapture: false,
+		},
+		{
+			name:                "Handle Already Exists API Error",
+			err:                 errorz.ErrAlreadyExists,
+			expectedStatusCode:  http.StatusConflict,
+			expectedBody:        `{"error":"Already Exists"}`,
 			expectSentryCapture: false,
 		},
 		{
@@ -77,6 +85,7 @@ func TestHandleError(t *testing.T) {
 
 			testLogger := framework.CreateTestLogger(t)
 
+			log.Println("the tc error: ", tc.err)
 			responses.HandleError(testLogger, c, tc.err)
 			assert.Equal(t, tc.expectedStatusCode, w.Code)
 			assert.JSONEq(t, tc.expectedBody, w.Body.String())

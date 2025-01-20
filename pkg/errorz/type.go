@@ -8,7 +8,7 @@ type APIError struct {
 }
 
 func (e *APIError) Error() string {
-	return e.Message
+	return ""
 }
 
 func NewAPIError(statusCode int, message string) *APIError {
@@ -22,6 +22,5 @@ func (a *APIError) JoinError(message string) error {
 	if a == nil {
 		return nil
 	}
-	a.Message = ""
 	return fmt.Errorf("%v%w", message, a)
 }
