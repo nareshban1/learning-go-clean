@@ -22,8 +22,6 @@ func (a *APIError) JoinError(message string) error {
 	if a == nil {
 		return nil
 	}
-	if a.Error() == "" {
-		return fmt.Errorf("%v%w", message, a)
-	}
-	return fmt.Errorf("%v %w", message, a)
+	a.Message = ""
+	return fmt.Errorf("%v%w", message, a)
 }
