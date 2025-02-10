@@ -45,9 +45,11 @@ services:
       start_period: "1s"
 
   adminer:
-    image: adminer
+    image: dockette/adminer:dg
+    environment:
+      - “MEMORY=512M”
     ports:
-      - ${ADMINER_PORT}:8080
+      - ${ADMINER_PORT}:80
 
 volumes:
   clean_db:

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"clean-architecture/domain/constants"
 	"clean-architecture/pkg/types"
 
 	_ "ariga.io/atlas-provider-gorm/gormschema"
@@ -21,11 +20,11 @@ type User struct {
 	FirstNameJa string `json:"first_name_ja" gorm:"size:255"`
 	LastNameJa  string `json:"last_name_ja" gorm:"size:255"`
 
-	Email string             `json:"email" gorm:"notnull;index,unique;size:255"`
-	Role  constants.UserRole `json:"role" gorm:"size:25" copier:"-"`
-
-	IsActive        bool `json:"is_active" gorm:"default:false"`
-	IsEmailVerified bool `json:"is_email_verified" gorm:"default:false"`
+	Email           string `json:"email" gorm:"notnull;index,unique;size:255"`
+	RoleID          uint   `json:"role_id"`
+	Role            Role   `json:"role" gorm:"foreignKey:RoleID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	IsActive        bool   `json:"is_active" gorm:"default:false"`
+	IsEmailVerified bool   `json:"is_email_verified" gorm:"default:false"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {

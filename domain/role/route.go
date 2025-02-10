@@ -1,4 +1,4 @@
-package user
+package role
 
 import (
 	"clean-architecture/pkg/framework"
@@ -31,9 +31,7 @@ func RegisterRoute(r *Route) {
 
 	api := r.handler.Group("/api")
 
-	api.POST("/user", r.controller.CreateUser)
-	api.GET("/user", r.controller.GetAllUsers)
-	api.GET("/user/:id", r.controller.GetUserByID)
-	api.PUT("/user/:id", r.controller.UpdateUser)
-	api.DELETE("/user/:id", r.controller.DeleteUser)
+	api.POST("/role", r.controller.CreateRole)
+	api.GET("/role", r.controller.GetRoles)
+
 }

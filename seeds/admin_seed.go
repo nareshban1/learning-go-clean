@@ -1,7 +1,6 @@
 package seeds
 
 import (
-	"clean-architecture/domain/constants"
 	"clean-architecture/domain/models"
 	"clean-architecture/domain/user"
 	"clean-architecture/pkg/framework"
@@ -50,7 +49,6 @@ func (s AdminSeed) Setup() {
 		adminUser := models.User{
 			Email:           email,
 			CognitoUID:      aws.String(cognitoUUID),
-			Role:            constants.UserRoleAdmin,
 			IsEmailVerified: true,
 			IsActive:        true,
 		}
