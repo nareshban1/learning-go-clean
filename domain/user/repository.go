@@ -4,7 +4,6 @@ import (
 	"clean-architecture/domain/models"
 	"clean-architecture/pkg/framework"
 	"clean-architecture/pkg/infrastructure"
-	"clean-architecture/pkg/types"
 )
 
 // UserRepository database structure
@@ -30,22 +29,22 @@ func (r *Repository) ExistsByEmail(email string) (bool, error) {
 
 func (r *Repository) GetAllUsers() ([]models.User, error) {
 	r.logger.Info("[UserRepository...Exists]")
-
 	var users []models.User
 	query := r.DB.Model(&models.User{}).Preload("Role.Permissions").Find(&users)
+
 	return users, query.Error
 }
 
-func (r *Repository) UpdateUser(userID types.BinaryUUID, user *models.User) (models.User, error) {
+func (r *Repository) UpdateUser(userID uint64, user *models.User) (models.User, error) {
 	r.logger.Info("[UserRepository...Exists]")
 	var userData models.User
-	query := r.DB.Model(&models.User{}).Where("uuid = ?", userID).Updates(user).Find(&userData)
+	query := r.DB.Model(&models.User{}).Where("id = ?", userID).Updates(user).Find(&userData)
 	return userData, query.Error
 }
 
-func (r *Repository) DeleteUser(userID types.BinaryUUID) error {
+func (r *Repository) DeleteUser(userID uint64) error {
 	r.logger.Info("[UserRepository...Exists]")
 
-	query := r.DB.Model(&models.User{}).Where("uuid = ?", userID).Delete(&models.User{})
+	query := r.DB.Model(&models.User{}).Where("id = ?", userID).Delete(&models.User{})
 	return query.Error
 }

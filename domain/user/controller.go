@@ -4,7 +4,7 @@ import (
 	"clean-architecture/domain/models"
 	"clean-architecture/pkg/framework"
 	"clean-architecture/pkg/responses"
-	"clean-architecture/pkg/types"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -54,7 +54,7 @@ func (u *Controller) UpdateUser(c *gin.Context) {
 	paramID := c.Param("id")
 	u.logger.Error(paramID)
 
-	userID, err := types.ShouldParseUUID(paramID)
+	userID, err := strconv.ParseUint(paramID, 10, 64)
 	if err != nil {
 		responses.HandleValidationError(u.logger, c, ErrInvalidUserID)
 		return
@@ -80,6 +80,19 @@ func (u *Controller) UpdateUser(c *gin.Context) {
 	c.JSON(200, gin.H{"data": userUpdateData})
 }
 
+type PermissionsResponse struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+type UserResponse struct {
+	ID          uint                  `json:"id"`
+	Name        string                `json:"name"`
+	Email       string                `json:"email"`
+	RoleID      uint                  `json:"roleId"`
+	RoleName    string                `json:"roleName"`
+	Permissions []PermissionsResponse `json:"permissions"`
+}
+
 // gelAllUsers
 func (u *Controller) GetAllUsers(c *gin.Context) {
 	users, err := u.service.GetAllUsers()
@@ -87,17 +100,37 @@ func (u *Controller) GetAllUsers(c *gin.Context) {
 		responses.HandleError(u.logger, c, err)
 		return
 	}
+	var usersResponse []UserResponse
+	for _, value := range users {
+		var permissions []PermissionsResponse
+
+		for _, permission := range value.Role.Permissions {
+			permissions = append(permissions, PermissionsResponse{
+				ID:   permission.ID,
+				Name: permission.Name,
+			})
+		}
+
+		usersResponse = append(usersResponse, UserResponse{
+			ID:          value.ID,
+			Name:        value.FirstName + ` ` + value.LastName,
+			Email:       value.Email,
+			RoleID:      value.RoleID,
+			RoleName:    value.Role.Name,
+			Permissions: permissions,
+		})
+	}
 
 	c.JSON(200, gin.H{
-		"data": users,
+		"data": usersResponse,
 	})
 }
 
 // GetOneUser gets one user
 func (u *Controller) GetUserByID(c *gin.Context) {
 	paramID := c.Param("id")
-
-	userID, err := types.ShouldParseUUID(paramID)
+	var userResponse UserResponse
+	userID, err := strconv.ParseUint(paramID, 10, 64)
 	if err != nil {
 		responses.HandleValidationError(u.logger, c, ErrInvalidUserID)
 		return
@@ -109,8 +142,25 @@ func (u *Controller) GetUserByID(c *gin.Context) {
 		return
 	}
 
+	var permissions []PermissionsResponse
+
+	for _, permission := range user.Role.Permissions {
+		permissions = append(permissions, PermissionsResponse{
+			ID:   permission.ID,
+			Name: permission.Name,
+		})
+	}
+
+	userResponse = UserResponse{
+		ID:          user.ID,
+		Name:        user.FirstName + ` ` + user.LastName,
+		RoleID:      user.RoleID,
+		RoleName:    user.Role.Name,
+		Permissions: permissions,
+	}
+
 	c.JSON(200, gin.H{
-		"data": user,
+		"data": userResponse,
 	})
 
 }
@@ -119,7 +169,7 @@ func (u *Controller) GetUserByID(c *gin.Context) {
 func (u *Controller) DeleteUser(c *gin.Context) {
 	paramID := c.Param("id")
 
-	userID, err := types.ShouldParseUUID(paramID)
+	userID, err := strconv.ParseUint(paramID, 10, 64)
 	if err != nil {
 		responses.HandleValidationError(u.logger, c, ErrInvalidUserID)
 		return

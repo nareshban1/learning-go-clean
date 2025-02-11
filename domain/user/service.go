@@ -3,7 +3,6 @@ package user
 import (
 	"clean-architecture/domain/models"
 	"clean-architecture/pkg/framework"
-	"clean-architecture/pkg/types"
 )
 
 // UserService service layer
@@ -29,12 +28,12 @@ func (s Service) Create(user *models.User) error {
 }
 
 // GetOneUser gets one user
-func (s Service) GetUserByID(userID types.BinaryUUID) (user models.User, err error) {
-	return user, s.repository.First(&user, "uuid = ?", userID).Error
+func (s Service) GetUserByID(userID uint64) (user models.User, err error) {
+	return user, s.repository.Preload("Role.Permissions").First(&user, "id = ?", userID).Error
 }
 
 // GetOneUser gets one user
-func (s Service) DeleteUserByID(userID types.BinaryUUID) (err error) {
+func (s Service) DeleteUserByID(userID uint64) (err error) {
 	return s.repository.DeleteUser(userID)
 }
 
@@ -53,6 +52,6 @@ func (s Service) GetAllUsers() ([]models.User, error) {
 }
 
 // Update User
-func (s Service) UpdateUser(userId types.BinaryUUID, user *models.User) (models.User, error) {
+func (s Service) UpdateUser(userId uint64, user *models.User) (models.User, error) {
 	return s.repository.UpdateUser(userId, user)
 }

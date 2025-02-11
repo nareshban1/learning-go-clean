@@ -11,7 +11,7 @@ type Permission struct {
 	gorm.Model
 	Name     string `json:"name" gorm:"size:255"`
 	IsActive bool   `json:"is_active" gorm:"default:false"`
-	Roles    []Role `gorm:"many2many:role_permissions"`
+	Roles    []Role `json:"-" gorm:"many2many:role_permissions"`
 }
 
 func (*Permission) TableName() string {
